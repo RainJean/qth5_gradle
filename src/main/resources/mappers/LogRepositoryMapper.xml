@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="repository.LogRepository">
+	<resultMap type="domain.Log" id="logResultMap">
+		<id property="id" column="id" />
+		<result property="loginTime" column="login_time" />
+		<association property="user" column="user_id" javaType="domain.User">
+			<id property="id" column="id" />
+			<result property="email" column="email" />
+			<result property="password" column="password" />
+			<result property="loginCount" column="login_count" />
+			<result property="lastLoginTime" column="last_login_time" />
+		</association>
+	</resultMap>
+
+	<select id="select" resultMap="logResultMap" parameterType="domain.User">
+		SELECT l.*
+		FROM log l INNER JOIN user u
+		ON l.user_id = u.id
+	</select>
+	
+	<insert id="save" parameterType="domain.Log">
+		INSERT INTO log (login_time, user_id)
+		VALUES(now(), #{user.id})
+	</insert>
+</mapper>

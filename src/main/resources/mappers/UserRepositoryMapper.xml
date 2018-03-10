@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="repository.UserRepository">
+	<resultMap type="domain.User" id="userResultMap">
+		<id property="id" column="id" />
+		<result property="email" column="email" />
+		<result property="password" column="password" />
+		<result property="loginCount" column="login_count" />
+		<result property="lastLoginTime" column="last_login_time" />
+	</resultMap>
+
+
+	<insert id="save" parameterType="domain.User">
+		INSERT INTO user (email, password, login_time, last_login_time)
+		VALUES (#{email}, #{password}, 0, null)
+	</insert>
+
+	<select id="getEmail" resultType="string" parameterType="string">
+		SELECT email FROM user WHERE email = #{email}
+	</select>
+	
+	<select id="get" resultMap="userResultMap" parameterType="domain.User">
+		SELECT * FROM user
+		WHERE email = #{email} AND password=#{password}
+	</select>
+
+ 	<update id="update" parameterType="domain.User">
+		UPDATE user SET last_login_time=now(), login_count = login_count + 1 WHERE id=#{id}
+	</update>
+</mapper>
